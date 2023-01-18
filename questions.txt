@@ -1,0 +1,18 @@
+1. What exactly is the mechanical loading? More specifically what pareters of it will need to be edited, what stays the same. 
+2. Also I assume there should be chamber specific control over these settings?
+3. Will the mechanical loading need to be adjusted during a run or can it be set before the test starts and remain the same?
+4. How does did the system internally verify that the gravity is approching the requested number? I did see where an accelerometer could be conected to the pi.
+5. How important is the smoothness of direction changes? In the video of the first model it chagnges direction quite abruptly, is this acceptible behavior or would it be better to make the change in direction smoother.
+6. The pattent mentions homeing the devices at the start of the run, to me this implies getting the platform into a known possition but as the platfrom is controled by dc motors there is no simple way to accomplish that. Was this a manual prossess or am I misinterpreting?
+7. Should the touchscreen ui be landscape or portrate?
+
+
+int i = 0
+
+
+void step()
+    i++;
+
+ld adr a
+add 1 a
+str a adr
