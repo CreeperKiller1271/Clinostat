@@ -131,17 +131,17 @@ def stepperApplyHoldRelease(motor, app, hold, rel, sps):
     return
 
 def gravityRun(target, runTime):
-    startTime = time.CLOCK_REALTIME() # finds the start time
+    startTime = time.clock_gettime(time.CLOCK_MONOTONIC) # finds the start time
     
     pid = PID(1,1,1, setpoint=target, sample_time=30)
 
-    m1adj = 1   #allows for the motor 1 speed to be adjusted from base
-    m1dir = 1
-    m2adj = 1   #allows for the motor 2 speed to be adjusted from base
-    m2dir = 1
+    m1adj = 1   #allows for motor 1's speed to be adjusted from base
+    m1dir = 1   #allows for motor 1 to flip its direction
+    m2adj = 1   #allows for motor 2's speed to be adjusted from base
+    m2dir = 1   #allows for motor 2 to flip its direction
 
     #main loop of the gravity system checks the 
-    while (time.CLOCK_REALTIME() - startTime) < runTime:
+    while (time.clock_gettime(time.CLOCK_MONOTONIC) - startTime) < runTime:
         hat1.motor1.throttle(mSpeed*m1adj*m1dir)
         hat1.motor2.throttle(mSpeed*m2adj*m2dir)
  
@@ -150,7 +150,8 @@ def gravityRun(target, runTime):
         if(random.choice(range(0,4)) == 1): #1/3 chance motor 2 changes direction
             m2dir*= -1    
 
-        m2adj = pid(1)
+        if(target != 0):
+            m2adj = pid(1)
         
         time.sleep(random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
     return

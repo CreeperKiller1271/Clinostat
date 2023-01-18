@@ -1,14 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 import time
+import threading
+#import motorControl
 
 #starts the main expariment 
 #gravity, eTime, dTime
 def startSequence():
     #check input values
     #start thread
+    #rThread.start()
     #hide main screen open the secondary
+    startTime = time.time()
     setupFrame.pack_forget()
+    rTime(startTime)
     runFrame.pack()
     return
 
@@ -16,6 +21,14 @@ def eStop():
     runFrame.pack_forget()
     setupFrame.pack()
 
+def rTime(sTime):
+    tString = '{:.2f}'.format(time.time() - sTime)
+    tLbl.config(text=tString)
+    tLbl.after(1000,rTime, sTime)
+
+rThread = threading.Thread()
+
+#window setup
 root = Tk()
 root.title("3D Clinostat")
 root.option_add('*tearOff', FALSE)
@@ -95,9 +108,14 @@ chamber6Lebel = Label(mLoadFrame, text="Chamber 6")
 chamber6Lebel.grid(row=5,column=0)
 
 runFrame = Frame(root)
+
+tLblFrame = LabelFrame(runFrame, text="Running Time")
+tLblFrame.pack()
+tLbl = Label(tLblFrame)
+tLbl.pack()
+
 stopSequenceButton = Button(runFrame, text = "Stop", command=eStop)
 stopSequenceButton.pack()
-
 
 root.config(menu=mBar)
 root.mainloop()
