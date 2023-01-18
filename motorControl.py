@@ -10,6 +10,7 @@ class stepperSequence:
     def __init__(self, rep) -> None:
         self.repeats = rep  #the number of times to repeat a given sequence
         self.steps = []     #an array to hold the sequence
+        return
 
     #called from the UI to add a step to the sequence
     def addStep(self, step, motor, app, hold, rel, sps, stepNum = 99):
@@ -17,6 +18,7 @@ class stepperSequence:
             self.steps.append((step, motor, app, hold, rel, sps))
         else:
             self.steps.insert(stepNum, (step, motor, app, hold, rel, sps))
+        return
     
     #called from the UI to remove a step to the sequence
     def removeStep(self, stepNum=99):
@@ -24,10 +26,12 @@ class stepperSequence:
             self.steps.pop(len(self.steps))
         else:
             self.steps.pop(stepNum)
+        return
 
     #called from the UI to change the number of repeats for a sequence
     def changeRepeats(self, rep):
         self.repeats = rep
+        return
     
     #runs the steps in the sequence
     def runSequence(self):
@@ -39,6 +43,7 @@ class stepperSequence:
                     stepperRemove(step[1], step[2], step[5])
                 elif(step[0] == 2):
                     stepperApplyHoldRelease(step[1], step[2], step[3], step[4], step[5])
+        return
 
 homeSpeed = 0.1 #motor speed to be used when homing the device
 mSpeed = .5 #general motor speed before the algo adjusts it
@@ -58,7 +63,8 @@ stepDict = {
     4: hat3.stepper2,
     5: hat4.stepper1,
     6: hat4.stepper2,
-    7: hat1.stepper2
+    7: hat1.stepper1,   #Testing Only
+    8: hat1.stepper2    #Testing Only
     }
     
 #rotates the platform forward
@@ -66,24 +72,28 @@ def rForward():
     hat1.motor1.throttle = homeSpeed
     time.sleep(0.1)
     hat1.motor1.throttle = 0
+    return
 
 #rotates the platform backward
 def rBackward():
     hat1.motor1.throttle = -homeSpeed
     time.sleep(0.1)
-    hat1.motor1.throttle = 0   
+    hat1.motor1.throttle = 0 
+    return  
 
 #rotates the platform left
 def rLeft():
     hat1.motor2.throttle = homeSpeed
     time.sleep(0.1)
     hat1.motor2.throttle = 0
+    return
 
 #rotates the platform right
 def rRight():
     hat1.motor2.throttle = -homeSpeed
     time.sleep(0.1)
     hat1.motor2.throttle = 0
+    return
 
 #jogs the stepper motor to a specific step value
 def jogStepper(motor, steps):
@@ -94,18 +104,21 @@ def jogStepper(motor, steps):
     for _ in range(steps):
         stepDict[motor].onestep(direction=stepper.FORWARD)
         time.sleep(0.01)
+    return
 
 #a simple fucntion to apply a specific number of steps to a chamber at the rate of sps
 def stepperApply(motor, steps, sps):
     for _ in range(steps):
         stepDict[motor].onestep(direction=stepper.FORWARD)
         time.sleep(1/sps)
+    return
 
 #a simple fucntion to remove a specific number of steps to a chamber at the rate of sps
 def stepperRemove(motor, steps, sps):
     for _ in range(steps):
         stepDict[motor].onestep(direction=stepper.BACKWARD)
         time.sleep(1/sps)
+    return
 
 def stepperApplyHoldRelease(motor, app, hold, rel, sps):
     for _ in range(app):
@@ -115,6 +128,7 @@ def stepperApplyHoldRelease(motor, app, hold, rel, sps):
     for _ in range(rel):
         stepDict[motor].onestep(direction=stepper.BACKWARD)
         time.sleep(1/sps)
+    return
 
 def gravityRun(target, runTime):
     startTime = time.CLOCK_REALTIME() # finds the start time
@@ -139,4 +153,4 @@ def gravityRun(target, runTime):
         m2adj = pid(1)
         
         time.sleep(random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
-
+    return
