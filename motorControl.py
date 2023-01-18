@@ -1,9 +1,9 @@
 import time
 import board
-from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
 import random
 from simple_pid import PID
+from adafruit_motorkit import MotorKit
 
 #class to hold the sequence for the mechanical loading
 class stepperSequence:
@@ -130,9 +130,9 @@ def stepperApplyHoldRelease(motor, app, hold, rel, sps):
         time.sleep(1/sps)
     return
 
-def gravityRun(target, runTime):
+def gravityRun(target = 0, runTime = 120):
     startTime = time.time() # finds the start time
-    
+
     pid = PID(1,1,1, setpoint=target, sample_time=30)
 
     m1adj = 1   #allows for motor 1's speed to be adjusted from base
@@ -154,4 +154,6 @@ def gravityRun(target, runTime):
             m2adj = pid(1)
         
         time.sleep(random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
+    hat1.motor1.throttle(0)
+    hat1.motor2.throttle(0)
     return

@@ -2,14 +2,14 @@ from tkinter import *
 from tkinter import ttk
 import time
 import threading
-#import motorControl
+import motorControl
 
 #starts the main expariment 
 #gravity, eTime, dTime
 def startSequence():
     #check input values
     #start thread
-    #rThread.start()
+    rThread.start()
     #hide main screen open the secondary
     startTime = time.time()
     setupFrame.pack_forget()
@@ -26,7 +26,7 @@ def rTime(sTime):
     tLbl.config(text=tString)
     tLbl.after(1000,rTime, sTime)
 
-rThread = threading.Thread()
+rThread = threading.Thread(target=motorControl.gravityRun)
 
 #window setup
 root = Tk()

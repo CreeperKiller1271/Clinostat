@@ -4,4 +4,5 @@ sudo apt install python3-pip
 sudo apt-get install -y python-smbus
 sudo apt-get install -y i2c-tools
 pip3 install adafruit-circuitpython-motorkit
+pip3 install adafruit-pca9685
 pip3 install simple-pid
