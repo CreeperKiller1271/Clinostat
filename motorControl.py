@@ -131,7 +131,7 @@ def stepperApplyHoldRelease(motor, app, hold, rel, sps):
     return
 
 def gravityRun(target, runTime):
-    startTime = time.clock_gettime(time.CLOCK_MONOTONIC) # finds the start time
+    startTime = time.time() # finds the start time
     
     pid = PID(1,1,1, setpoint=target, sample_time=30)
 
@@ -141,7 +141,7 @@ def gravityRun(target, runTime):
     m2dir = 1   #allows for motor 2 to flip its direction
 
     #main loop of the gravity system checks the 
-    while (time.clock_gettime(time.CLOCK_MONOTONIC) - startTime) < runTime:
+    while (time.time() - startTime) < runTime:
         hat1.motor1.throttle(mSpeed*m1adj*m1dir)
         hat1.motor2.throttle(mSpeed*m2adj*m2dir)
  
