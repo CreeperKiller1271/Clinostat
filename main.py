@@ -1,7 +1,5 @@
 from tkinter import *
-from tkinter import ttk
 import time
-import threading
 import motorControl
 
 #starts the main expariment 
@@ -9,7 +7,8 @@ import motorControl
 def startSequence():
     #check input values
     #start thread
-    rThread.start()
+    sys.setup(int(gInput.get()), int(tInput.get()))
+    sys.run()
     #hide main screen open the secondary
     startTime = time.time()
     setupFrame.pack_forget()
@@ -18,6 +17,7 @@ def startSequence():
     return
 
 def eStop():
+    sys.stop()
     runFrame.pack_forget()
     setupFrame.pack()
 
@@ -26,7 +26,7 @@ def rTime(sTime):
     tLbl.config(text=tString)
     tLbl.after(1000,rTime, sTime)
 
-rThread = threading.Thread(target=motorControl.gravityRun)
+sys = motorControl.gravitySystem
 
 #window setup
 root = Tk()
@@ -70,19 +70,19 @@ homeFrame = LabelFrame(setupFrame, text="Homing")
 homeFrame.grid(row=5, column=0)
 
 #Up button 
-homeUp = Button(homeFrame, text = '\u25B2', repeatdelay=100, repeatinterval=100)
+homeUp = Button(homeFrame, text = '\u25B2', command=motorControl.rForward, repeatdelay=100, repeatinterval=100)
 homeUp.grid(row = 0, column=2)
 
 #Down button
-homeDown = Button(homeFrame, text = '\u25BC', repeatdelay=100, repeatinterval=100)
+homeDown = Button(homeFrame, text = '\u25BC', command=motorControl.rBackward, repeatdelay=100, repeatinterval=100)
 homeDown.grid(row = 3, column=2)
 
 #Left button
-homeLeft = Button(homeFrame, text = '\u25C0', repeatdelay=100, repeatinterval=100)
+homeLeft = Button(homeFrame, text = '\u25C0', command=motorControl.rLeft, repeatdelay=100, repeatinterval=100)
 homeLeft.grid(row = 2, column=1)
 
 #Right button
-homeRight = Button(homeFrame, text = '\u25B6', repeatdelay=100, repeatinterval=100)
+homeRight = Button(homeFrame, text = '\u25B6', command=motorControl.rRight, repeatdelay=100, repeatinterval=100)
 homeRight.grid(row = 2, column=3)
 
 #mechanical loading configuration frame
