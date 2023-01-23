@@ -42,14 +42,14 @@ class gravitySystem:
             hat1.motor2.throttle = mSpeed*m2adj*m2dir
     
             if(random.choice(range(0,4)) == 1): #1/3 chance motor 1 changes direction
-                m1dir*= -1
+                m1dir = m1dir * -1
             if(random.choice(range(0,4)) == 1): #1/3 chance motor 2 changes direction
-                m2dir*= -1    
+                m2dir = m2dir * -1    
 
             if(self.target != 0):
                 m2adj = pid(1)
             
-            time.sleep(random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
+            time.sleep(5)#random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
         return
@@ -95,7 +95,7 @@ class stepperSequence:
                     stepperApplyHoldRelease(step[1], step[2], step[3], step[4], step[5])
         return
 
-minSpeed = 0.1 #motor speed to be used when homing the device
+minSpeed = .8 #motor speed to be used when homing the device
 mSpeed = 1 #general motor speed before the algo adjusts it
 
 

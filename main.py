@@ -7,7 +7,7 @@ import motorControl
 def startSequence():
     #check input values
     #start thread
-    sys.setup(int(gInput.get()), int(tInput.get()))
+    sys.setup(gInput.get(), tInput.get())
     sys.run()
     #hide main screen open the secondary
     startTime = time.time()
@@ -26,7 +26,7 @@ def rTime(sTime):
     tLbl.config(text=tString)
     tLbl.after(1000,rTime, sTime)
 
-sys = motorControl.gravitySystem
+sys = motorControl.gravitySystem()
 
 #window setup
 root = Tk()
