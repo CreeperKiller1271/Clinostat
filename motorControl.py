@@ -13,7 +13,7 @@ class gravitySystem:
         self.shutdown = False
         self.target = 0
         self.runTime = 30
-
+        self.accelRom = QwiicIcm20948(0x66)
 
     def run(self):
         self.rThread.start()
@@ -27,6 +27,8 @@ class gravitySystem:
 
     def gravityRun(self):
         startTime = time.time() # finds the start time
+
+        self.accelRom.begin()
 
         pid = PID(1,1,1, setpoint=self.target, sample_time=30)
         pid.output_limits = (minSpeed, 1)
@@ -50,6 +52,8 @@ class gravitySystem:
                 m2adj = pid(1)
             
             time.sleep(5)#random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
+            self.accelRom.getAgmt()
+            print(self.accelRom.ayRaw)
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
         return
