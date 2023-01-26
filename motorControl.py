@@ -6,6 +6,25 @@ from adafruit_motorkit import MotorKit
 from qwiic_icm20948 import QwiicIcm20948
 import threading
 
+#declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
+hat1 = MotorKit()
+#hat2 = MotorKit(address=0x61)
+#hat3 = MotorKit(address=0x62)
+#hat4 = MotorKit(address=0x63)
+
+#holds the values of the stepper so only the number needs passed to the function
+stepDict = []
+    #1: hat2.stepper1,
+    #2: hat2.stepper2,
+    #3: hat3.stepper1,
+    #4: hat3.stepper2,
+    #5: hat4.stepper1,
+    #6: hat4.stepper2,
+    #7: hat1.stepper1,   #Testing Only
+stepDict.append( hat1.stepper2())    #Testing Only
+
+
+stepDict[8] = hat1.stepper1(microsteps=128)
 #Contains all the information for the gravity system
 class gravitySystem:
     def __init__(self):
@@ -14,6 +33,8 @@ class gravitySystem:
         self.target = 0
         self.runTime = 30
         self.accelRom = QwiicIcm20948(0x66)
+        self.minSpeed = .8 #motor speed to be used when homing the device
+        self.maxSpeed = 1 #general motor speed before the algo adjusts it
 
     def run(self):
         self.rThread.start()
@@ -21,9 +42,41 @@ class gravitySystem:
     def stop(self):
         self.shutdown = True
 
-    def setup(self, target, runTime):
+    def setup(self, target: int, runTime: int):
         self.target = target
         self.runTime = runTime
+
+    def setSpeed(self, miSpeed: int, maSpeed: int):
+        self.minSpeed = miSpeed
+        self.maxSpeed = maSpeed
+
+    #rotates the platform forward
+    def rForward(self):
+        hat1.motor1.throttle = self.minSpeed
+        time.sleep(0.1)
+        hat1.motor1.throttle = 0
+        return
+
+    #rotates the platform backward
+    def rBackward(self):
+        hat1.motor1.throttle = -self.minSpeed
+        time.sleep(0.1)
+        hat1.motor1.throttle = 0 
+        return  
+
+    #rotates the platform left
+    def rLeft(self):
+        hat1.motor2.throttle = self.minSpeed
+        time.sleep(0.1)
+        hat1.motor2.throttle = 0
+        return
+
+    #rotates the platform right
+    def rRight(self):
+        hat1.motor2.throttle = -self.minSpeed
+        time.sleep(0.1)
+        hat1.motor2.throttle = 0
+        return
 
     def gravityRun(self):
         startTime = time.time() # finds the start time
@@ -31,7 +84,7 @@ class gravitySystem:
         self.accelRom.begin()
 
         pid = PID(1,1,1, setpoint=self.target, sample_time=30)
-        pid.output_limits = (minSpeed, 1)
+        pid.output_limits = (self.minSpeed, 1)
 
         m1adj = 1   #allows for motor 1's speed to be adjusted from base
         m1dir = 1   #allows for motor 1 to flip its direction
@@ -40,8 +93,8 @@ class gravitySystem:
 
         #main loop of the gravity system checks the 
         while (time.time() - startTime) < self.runTime and self.shutdown == False:
-            hat1.motor1.throttle = mSpeed*m1adj*m1dir
-            hat1.motor2.throttle = mSpeed*m2adj*m2dir
+            hat1.motor1.throttle = self.maxSpeed*m1adj*m1dir
+            hat1.motor2.throttle = self.maxSpeed*m2adj*m2dir
     
             if(random.choice(range(0,4)) == 1): #1/3 chance motor 1 changes direction
                 m1dir = m1dir * -1
@@ -99,56 +152,6 @@ class stepperSequence:
                     stepperApplyHoldRelease(step[1], step[2], step[3], step[4], step[5])
         return
 
-minSpeed = .8 #motor speed to be used when homing the device
-mSpeed = 1 #general motor speed before the algo adjusts it
-
-
-#declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
-hat1 = MotorKit()
-#hat2 = MotorKit(address=0x61)
-#hat3 = MotorKit(address=0x62)
-#hat4 = MotorKit(address=0x63)
-
-#holds the values of the stepper so only the number needs passed to the function
-stepDict = {
-    #1: hat2.stepper1,
-    #2: hat2.stepper2,
-    #3: hat3.stepper1,
-    #4: hat3.stepper2,
-    #5: hat4.stepper1,
-    #6: hat4.stepper2,
-    #7: hat1.stepper1,   #Testing Only
-    8: hat1.stepper2    #Testing Only
-    }
-    
-#rotates the platform forward
-def rForward():
-    hat1.motor1.throttle = minSpeed
-    time.sleep(0.1)
-    hat1.motor1.throttle = 0
-    return
-
-#rotates the platform backward
-def rBackward():
-    hat1.motor1.throttle = -minSpeed
-    time.sleep(0.1)
-    hat1.motor1.throttle = 0 
-    return  
-
-#rotates the platform left
-def rLeft():
-    hat1.motor2.throttle = minSpeed
-    time.sleep(0.1)
-    hat1.motor2.throttle = 0
-    return
-
-#rotates the platform right
-def rRight():
-    hat1.motor2.throttle = -minSpeed
-    time.sleep(0.1)
-    hat1.motor2.throttle = 0
-    return
-
 #jogs the stepper motor to a specific step value
 def jogStepper(motor, steps):
     stepDict[motor].release()
@@ -156,7 +159,7 @@ def jogStepper(motor, steps):
 
     #after the chanber resets to zero moves the requested number of steps
     for _ in range(steps):
-        stepDict[motor].onestep(direction=stepper.FORWARD)
+        stepDict[motor].onestep(direction=stepper.FORWARD, )
         time.sleep(0.01)
     return
 
@@ -182,33 +185,4 @@ def stepperApplyHoldRelease(motor, app, hold, rel, sps):
     for _ in range(rel):
         stepDict[motor].onestep(direction=stepper.BACKWARD)
         time.sleep(1/sps)
-    return
-
-def gravityRun(target = 0, runTime = 120):
-    startTime = time.time() # finds the start time
-
-    pid = PID(1,1,1, setpoint=target, sample_time=30)
-    pid.output_limits = (minSpeed, 1)
-
-    m1adj = 1   #allows for motor 1's speed to be adjusted from base
-    m1dir = 1   #allows for motor 1 to flip its direction
-    m2adj = 1   #allows for motor 2's speed to be adjusted from base
-    m2dir = 1   #allows for motor 2 to flip its direction
-
-    #main loop of the gravity system checks the 
-    while (time.time() - startTime) < runTime:
-        hat1.motor1.throttle = mSpeed*m1adj*m1dir
-        hat1.motor2.throttle = mSpeed*m2adj*m2dir
- 
-        if(random.choice(range(0,4)) == 1): #1/3 chance motor 1 changes direction
-            m1dir*= -1
-        if(random.choice(range(0,4)) == 1): #1/3 chance motor 2 changes direction
-            m2dir*= -1    
-
-        if(target != 0):
-            m2adj = pid(1)
-        
-        time.sleep(random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
-    hat1.motor1.throttle = 0
-    hat1.motor2.throttle = 0
     return

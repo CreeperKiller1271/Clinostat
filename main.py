@@ -70,19 +70,19 @@ homeFrame = LabelFrame(setupFrame, text="Homing")
 homeFrame.grid(row=5, column=0)
 
 #Up button 
-homeUp = Button(homeFrame, text = '\u25B2', command=motorControl.rForward, repeatdelay=100, repeatinterval=100)
+homeUp = Button(homeFrame, text = '\u25B2', command=sys.rForward, repeatdelay=100, repeatinterval=100)
 homeUp.grid(row = 0, column=2)
 
 #Down button
-homeDown = Button(homeFrame, text = '\u25BC', command=motorControl.rBackward, repeatdelay=100, repeatinterval=100)
+homeDown = Button(homeFrame, text = '\u25BC', command=sys.rBackward, repeatdelay=100, repeatinterval=100)
 homeDown.grid(row = 3, column=2)
 
 #Left button
-homeLeft = Button(homeFrame, text = '\u25C0', command=motorControl.rLeft, repeatdelay=100, repeatinterval=100)
+homeLeft = Button(homeFrame, text = '\u25C0', command=sys.rLeft, repeatdelay=100, repeatinterval=100)
 homeLeft.grid(row = 2, column=1)
 
 #Right button
-homeRight = Button(homeFrame, text = '\u25B6', command=motorControl.rRight, repeatdelay=100, repeatinterval=100)
+homeRight = Button(homeFrame, text = '\u25B6', command=sys.rRight, repeatdelay=100, repeatinterval=100)
 homeRight.grid(row = 2, column=3)
 
 #mechanical loading configuration frame
