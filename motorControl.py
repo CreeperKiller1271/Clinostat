@@ -7,13 +7,13 @@ from qwiic_icm20948 import QwiicIcm20948
 import threading
 
 #declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
-hat1 = MotorKit()
+hat1 = MotorKit(steppers_microsteps=128)
 #hat2 = MotorKit(address=0x61)
 #hat3 = MotorKit(address=0x62)
 #hat4 = MotorKit(address=0x63)
 
 #holds the values of the stepper so only the number needs passed to the function
-stepDict = []
+stepDict = {
     #1: hat2.stepper1,
     #2: hat2.stepper2,
     #3: hat3.stepper1,
@@ -21,10 +21,9 @@ stepDict = []
     #5: hat4.stepper1,
     #6: hat4.stepper2,
     #7: hat1.stepper1,   #Testing Only
-stepDict.append( hat1.stepper2())    #Testing Only
+    8: hat1.stepper2    #Testing Only
+    }
 
-
-stepDict[8] = hat1.stepper1(microsteps=128)
 #Contains all the information for the gravity system
 class gravitySystem:
     def __init__(self):

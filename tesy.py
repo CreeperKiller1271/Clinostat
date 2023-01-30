@@ -6,8 +6,6 @@ mpu9250 = MPU9250()
 
 while True:
     accel = mpu9250.readAccel()
-    print (" ax = %d" , accel['x'])
-    print (" ay = %d" , accel['y'])
-    print (" az = %d" , accel['z'])
+    print ("Accel ax = " , accel['x'], " ay = " , accel['y'], " az = " , accel['z'])
 
-    time.sleep(.5)
+    time.sleep(.1)
