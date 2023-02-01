@@ -3,7 +3,7 @@ from adafruit_motor import stepper
 import random
 from simple_pid import PID
 from adafruit_motorkit import MotorKit
-from qwiic_icm20948 import QwiicIcm20948
+from FaBo9Axis_MPU9250 import MPU9250
 import threading
 
 #declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
@@ -31,9 +31,12 @@ class gravitySystem:
         self.shutdown = False
         self.target = 0
         self.runTime = 30
-        self.accelRom = QwiicIcm20948(0x66)
+        self.accelRom = MPU9250()
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
+        self.xAvg = 0
+        self.yAvg = 0
+        self.zAvg = 0 
 
     def run(self):
         self.rThread.start()
@@ -80,32 +83,48 @@ class gravitySystem:
     def gravityRun(self):
         startTime = time.time() # finds the start time
 
-        self.accelRom.begin()
+        pid = PID(1,1,1, setpoint=self.target, sample_time=.1)
+        pid.output_limits = (self.minSpeed, self.maxSpeed)
 
-        pid = PID(1,1,1, setpoint=self.target, sample_time=30)
-        pid.output_limits = (self.minSpeed, 1)
-
+        sSpeed = (self.maxSpeed-self.minSpeed)/2
         m1adj = 1   #allows for motor 1's speed to be adjusted from base
         m1dir = 1   #allows for motor 1 to flip its direction
         m2adj = 1   #allows for motor 2's speed to be adjusted from base
         m2dir = 1   #allows for motor 2 to flip its direction
+        loop = 1    #keeps track of the current loop, needs to start at 1 for averaging
+        loopDirChange = 1   #keeps track of the current loop for changing the direction
+        xTot = 0    #totals the x accell over time
+        yTot = 0    #totals the y accell over time
+        zTot = 0    #totals the z accell over time
 
         #main loop of the gravity system checks the 
         while (time.time() - startTime) < self.runTime and self.shutdown == False:
-            hat1.motor1.throttle = self.maxSpeed*m1adj*m1dir
-            hat1.motor2.throttle = self.maxSpeed*m2adj*m2dir
+            #sets the speeds of the motors for this loop
+            hat1.motor1.throttle = sSpeed*m1adj*m1dir
+            hat1.motor2.throttle = sSpeed*m2adj*m2dir
     
-            if(random.choice(range(0,4)) == 1): #1/3 chance motor 1 changes direction
-                m1dir = m1dir * -1
-            if(random.choice(range(0,4)) == 1): #1/3 chance motor 2 changes direction
-                m2dir = m2dir * -1    
+            #gets the accelerometer values adds them to the total then calculates the rolling average.
+            accel = self.accelRom.readAccel()
+            xTot += accel['x']
+            yTot += accel['y']
+            zTot += accel['z']
+            self.xAvg = xTot/loop
+            self.yAvg = yTot/loop
+            self.zAvg = zTot/loop
 
             if(self.target != 0):
-                m2adj = pid(1)
-            
-            time.sleep(5)#random.choice(range(3,30))) #sleeps from 3 to 60 seconds before setting and checking again
-            self.accelRom.getAgmt()
-            print(self.accelRom.ayRaw)
+                m2adj = pid(self.zAvg)
+
+            if(loopDirChange > random.choice(range(30,300))): #will attempt to change the direction every 3-30 seconds
+                if(random.choice(range(0,2)) == 1): #1/5 chance motor 1 changes direction
+                    m1dir = m1dir * -1
+                if(random.choice(range(0,2)) == 1): #1/5 chance motor 2 changes direction
+                    m2dir = m2dir * -1    
+                loopDirChange = 0
+
+            loop += 1
+            loopDirChange += 1
+            time.sleep(.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
         return
