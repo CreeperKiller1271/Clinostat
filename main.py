@@ -7,7 +7,7 @@ import motorControl
 def startSequence():
     #check input values
     #start thread
-    sys.setup(gInput.get(), tInput.get())
+    sys.setup(gInput.getint(gInput.get()), tInput.getint(tInput.get()))
     sys.run()
     #hide main screen open the secondary
     startTime = time.time()

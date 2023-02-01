@@ -26,12 +26,13 @@ stepDict = {
 
 #Contains all the information for the gravity system
 class gravitySystem:
+
     def __init__(self):
         self.rThread = threading.Thread(target=self.gravityRun)
         self.shutdown = False
         self.target = 0
-        self.runTime = 30
-        self.accelRom = MPU9250()
+        self.runTime = 30.0
+        ##self.accelRom = MPU9250()
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
@@ -46,7 +47,7 @@ class gravitySystem:
 
     def setup(self, target: int, runTime: int):
         self.target = target
-        self.runTime = runTime
+        self.runTime = runTime#*3600 #converts from hours to seconds
 
     def setSpeed(self, miSpeed: int, maSpeed: int):
         self.minSpeed = miSpeed
@@ -86,7 +87,7 @@ class gravitySystem:
         pid = PID(1,1,1, setpoint=self.target, sample_time=.1)
         pid.output_limits = (self.minSpeed, self.maxSpeed)
 
-        sSpeed = (self.maxSpeed-self.minSpeed)/2
+        sSpeed = (self.maxSpeed+self.minSpeed)/2
         m1adj = 1   #allows for motor 1's speed to be adjusted from base
         m1dir = 1   #allows for motor 1 to flip its direction
         m2adj = 1   #allows for motor 2's speed to be adjusted from base
@@ -98,16 +99,16 @@ class gravitySystem:
         zTot = 0    #totals the z accell over time
 
         #main loop of the gravity system checks the 
-        while (time.time() - startTime) < self.runTime and self.shutdown == False:
+        while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop
             hat1.motor1.throttle = sSpeed*m1adj*m1dir
             hat1.motor2.throttle = sSpeed*m2adj*m2dir
-    
+
             #gets the accelerometer values adds them to the total then calculates the rolling average.
-            accel = self.accelRom.readAccel()
-            xTot += accel['x']
-            yTot += accel['y']
-            zTot += accel['z']
+            #accel = self.accelRom.readAccel()
+            #xTot += accel['x']
+            #yTot += accel['y']
+            #zTot += accel['z']
             self.xAvg = xTot/loop
             self.yAvg = yTot/loop
             self.zAvg = zTot/loop
@@ -116,9 +117,9 @@ class gravitySystem:
                 m2adj = pid(self.zAvg)
 
             if(loopDirChange > random.choice(range(30,300))): #will attempt to change the direction every 3-30 seconds
-                if(random.choice(range(0,2)) == 1): #1/5 chance motor 1 changes direction
+                if(random.choice(range(0,3)) == 1): #1/5 chance motor 1 changes direction
                     m1dir = m1dir * -1
-                if(random.choice(range(0,2)) == 1): #1/5 chance motor 2 changes direction
+                if(random.choice(range(0,3)) == 1): #1/5 chance motor 2 changes direction
                     m2dir = m2dir * -1    
                 loopDirChange = 0
 

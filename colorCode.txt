@@ -1,0 +1,4 @@
+pin2 green -> white
+pin4 yellow -> brown
+pin8 cyan -> purple
+pin9 white -> light brown
