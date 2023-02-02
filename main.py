@@ -3,7 +3,6 @@ import time
 import motorControl
 
 #starts the main expariment 
-#gravity, eTime, dTime
 def startSequence():
     #check input values
     #start thread
@@ -13,6 +12,7 @@ def startSequence():
     startTime = time.time()
     setupFrame.pack_forget()
     rTime(startTime)
+    gUpdate
     runFrame.pack()
     return
 
@@ -24,7 +24,14 @@ def eStop():
 def rTime(sTime):
     tString = '{:.2f}'.format(time.time() - sTime)
     tLbl.config(text=tString)
+    if(not sys.rThread.is_alive()):
+        eStop()
     tLbl.after(1000,rTime, sTime)
+
+def gUpdate():
+    gString = "x: " + sys.xAvg + " y: " + sys.yAvg + " z: " + sys.zAvg
+    gLbl.config(text=gString)
+    gLbl.after(1000,gUpdate)
 
 sys = motorControl.gravitySystem()
 
@@ -113,6 +120,11 @@ tLblFrame = LabelFrame(runFrame, text="Running Time")
 tLblFrame.pack()
 tLbl = Label(tLblFrame)
 tLbl.pack()
+
+gLblFrame = LabelFrame(runFrame, text="Gravity")
+gLblFrame.pack()
+gLbl = Label(gLblFrame)
+gLbl.pack()
 
 stopSequenceButton = Button(runFrame, text = "Stop", command=eStop)
 stopSequenceButton.pack()

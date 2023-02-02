@@ -32,7 +32,7 @@ class gravitySystem:
         self.shutdown = False
         self.target = 0
         self.runTime = 30.0
-        ##self.accelRom = MPU9250()
+        #self.accelRom = MPU9250()
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
@@ -53,37 +53,42 @@ class gravitySystem:
         self.minSpeed = miSpeed
         self.maxSpeed = maSpeed
 
+    #resets the thread so the program can be run again after an exit.
+    def resetThread(self):
+        self.rThread = None
+        self.rThread = threading.Thread(target=self.gravityRun)
+
     #rotates the platform forward
     def rForward(self):
-        hat1.motor1.throttle = self.minSpeed
-        time.sleep(0.1)
-        hat1.motor1.throttle = 0
-        return
-
-    #rotates the platform backward
-    def rBackward(self):
-        hat1.motor1.throttle = -self.minSpeed
-        time.sleep(0.1)
-        hat1.motor1.throttle = 0 
-        return  
-
-    #rotates the platform left
-    def rLeft(self):
         hat1.motor2.throttle = self.minSpeed
         time.sleep(0.1)
         hat1.motor2.throttle = 0
         return
 
-    #rotates the platform right
-    def rRight(self):
+    #rotates the platform backward
+    def rBackward(self):
         hat1.motor2.throttle = -self.minSpeed
         time.sleep(0.1)
-        hat1.motor2.throttle = 0
+        hat1.motor2.throttle = 0 
+        return  
+
+    #rotates the platform left
+    def rLeft(self):
+        hat1.motor1.throttle = self.minSpeed
+        time.sleep(0.1)
+        hat1.motor1.throttle = 0
+        return
+
+    #rotates the platform right
+    def rRight(self):
+        hat1.motor1.throttle = -self.minSpeed
+        time.sleep(0.1)
+        hat1.motor1.throttle = 0
         return
 
     def gravityRun(self):
         startTime = time.time() # finds the start time
-
+        self.shutdown = False
         pid = PID(1,1,1, setpoint=self.target, sample_time=.1)
         pid.output_limits = (self.minSpeed, self.maxSpeed)
 
