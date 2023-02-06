@@ -32,7 +32,7 @@ class gravitySystem:
         self.shutdown = False
         self.target = 0
         self.runTime = 30.0
-        #self.accelRom = MPU9250()
+        self.accelRom = MPU9250()
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
@@ -110,10 +110,10 @@ class gravitySystem:
             hat1.motor2.throttle = sSpeed*m2adj*m2dir
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
-            #accel = self.accelRom.readAccel()
-            #xTot += accel['x']
-            #yTot += accel['y']
-            #zTot += accel['z']
+            accel = self.accelRom.readAccel()
+            xTot += accel['x']
+            yTot += accel['y']
+            zTot += accel['z']
             self.xAvg = xTot/loop
             self.yAvg = yTot/loop
             self.zAvg = zTot/loop
