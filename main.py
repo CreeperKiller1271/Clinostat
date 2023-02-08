@@ -6,14 +6,14 @@ import motorControl
 def startSequence():
     #check input values
     #start thread
-    #sys.setup(gInput.getint(gInput.get()), tInput.getint(tInput.get()))
+    sys.setup(gInput.getdouble(gInput.get()), tInput.getdouble(tInput.get()))
     sys.run()
     #hide main screen open the secondary
     startTime = time.time()
     setupFrame.pack_forget()
     rTime(startTime)
-    gUpdate
     runFrame.pack()
+    gUpdate()
     return
 
 def eStop():
@@ -29,7 +29,7 @@ def rTime(sTime):
     tLbl.after(1000,rTime, sTime)
 
 def gUpdate():
-    gString = "x: " + sys.xAvg + " y: " + sys.yAvg + " z: " + sys.zAvg
+    gString = "x: ", '{0:.2f}'.format(abs(sys.xAvg)), " y: ", '{0:.2f}'.format(abs(sys.yAvg)), " z: ", '{0:.2f}'.format(abs(sys.zAvg))
     gLbl.config(text=gString)
     gLbl.after(1000,gUpdate)
 

@@ -28,11 +28,10 @@ stepDict = {
 class gravitySystem:
 
     def __init__(self):
-        self.rThread = threading.Thread(target=self.gravityRun)
         self.shutdown = False
         self.target = 0
         self.runTime = 30.0
-        self.accelRom = MPU9250()
+        self.accelRom = MPU9250(address=0x68)
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
@@ -40,6 +39,9 @@ class gravitySystem:
         self.zAvg = 0 
 
     def run(self):
+        self.rThread = None
+        self.rThread = threading.Thread(target=self.gravityRun)
+        self.shutdown = False
         self.rThread.start()
 
     def stop(self):
@@ -52,11 +54,6 @@ class gravitySystem:
     def setSpeed(self, miSpeed: int, maSpeed: int):
         self.minSpeed = miSpeed
         self.maxSpeed = maSpeed
-
-    #resets the thread so the program can be run again after an exit.
-    def resetThread(self):
-        self.rThread = None
-        self.rThread = threading.Thread(target=self.gravityRun)
 
     #rotates the platform forward
     def rForward(self):
@@ -89,37 +86,55 @@ class gravitySystem:
     def gravityRun(self):
         startTime = time.time() # finds the start time
         self.shutdown = False
-        pid = PID(1,1,1, setpoint=self.target, sample_time=.1)
+        pid = PID(-1,-1,-1, setpoint=self.target, sample_time=.1)
         pid.output_limits = (self.minSpeed, self.maxSpeed)
 
-        sSpeed = (self.maxSpeed+self.minSpeed)/2
-        m1adj = 1   #allows for motor 1's speed to be adjusted from base
+        m1Speed = (self.maxSpeed+self.minSpeed)/2
+        m2Speed = (self.maxSpeed+self.minSpeed)/2
         m1dir = 1   #allows for motor 1 to flip its direction
-        m2adj = 1   #allows for motor 2's speed to be adjusted from base
         m2dir = 1   #allows for motor 2 to flip its direction
         loop = 1    #keeps track of the current loop, needs to start at 1 for averaging
         loopDirChange = 1   #keeps track of the current loop for changing the direction
         xTot = 0    #totals the x accell over time
         yTot = 0    #totals the y accell over time
         zTot = 0    #totals the z accell over time
+        self.xAvg = 0
+        self.yAvg = 0
+        self.zAvg = 0
 
         #main loop of the gravity system checks the 
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
-            #sets the speeds of the motors for this loop
-            hat1.motor1.throttle = sSpeed*m1adj*m1dir
-            hat1.motor2.throttle = sSpeed*m2adj*m2dir
+            #sets the speeds of the motors for this loop]
+            try:
+                hat1.motor1.throttle = 1#m1Speed*m1dir
+            except:
+                pass
+            try:
+                hat1.motor2.throttle = .8#m2Speed*m2dir
+            except:
+                pass
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
-            accel = self.accelRom.readAccel()
-            xTot += accel['x']
-            yTot += accel['y']
-            zTot += accel['z']
-            self.xAvg = xTot/loop
-            self.yAvg = yTot/loop
-            self.zAvg = zTot/loop
+            try:
+                accel = self.accelRom.readAccel()
+                xTot += accel['x']
+                yTot += accel['y']
+                zTot += accel['z']
+                
+                self.xAvg = xTot/loop
+                self.yAvg = yTot/loop
+                self.zAvg = zTot/loop
+                loop += 1
+            except:
+                #print("Unable to get data from accelerometer.")
+                pass
+            
+
+            print("x: ", '{0:.2f}'.format(abs(self.xAvg)), " y: ", '{0:.2f}'.format(abs(self.yAvg)), " z: ", '{0:.2f}'.format(abs(self.zAvg)))
 
             if(self.target != 0):
-                m2adj = pid(self.zAvg)
+                m2Speed = pid(abs(self.zAvg))
+                print("Adjusted Speed: ", m2Speed)
 
             if(loopDirChange > random.choice(range(30,300))): #will attempt to change the direction every 3-30 seconds
                 if(random.choice(range(0,3)) == 1): #1/5 chance motor 1 changes direction
@@ -128,7 +143,6 @@ class gravitySystem:
                     m2dir = m2dir * -1    
                 loopDirChange = 0
 
-            loop += 1
             loopDirChange += 1
             time.sleep(.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
