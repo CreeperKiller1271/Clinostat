@@ -108,20 +108,20 @@ class gravitySystem:
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop]
             try:
-                hat1.motor1.throttle = 1#m1Speed*m1dir
+                hat1.motor1.throttle = 1*m1dir#m1Speed*m1dir
             except:
                 pass
             try:
-                hat1.motor2.throttle = .8#m2Speed*m2dir
+                hat1.motor2.throttle = 0.75*m2dir#m2Speed*m2dir
             except:
                 pass
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
                 accel = self.accelRom.readAccel()
-                xTot += abs(accel['x'])
-                yTot += abs(accel['y'])
-                zTot += abs(accel['z'])
+                xTot += accel['x']
+                yTot += accel['y']
+                zTot += accel['z']
                 
                 self.xAvg = xTot/loop
                 self.yAvg = yTot/loop
@@ -137,13 +137,13 @@ class gravitySystem:
             print("Gravity: ", '{0:.2f}'.format(self.gAvg))
 
             if(self.target != 0):
-                m2Speed = pid(abs(self.zAvg))
+                m2Speed = pid(abs(self.gAvg))
                 print("Adjusted Speed: ", m2Speed)
 
-            if(loopDirChange > random.choice(range(30,300))): #will attempt to change the direction every 3-30 seconds
-                if(random.choice(range(0,3)) == 1): #1/5 chance motor 1 changes direction
+            if(loopDirChange > 30): #will attempt to change the direction every 3-30 seconds
+                if(random.choice(range(0,9)) == 1): #1/5 chance motor 1 changes direction
                     m1dir = m1dir * -1
-                if(random.choice(range(0,3)) == 1): #1/5 chance motor 2 changes direction
+                if(random.choice(range(0,9)) == 1): #1/5 chance motor 2 changes direction
                     m2dir = m2dir * -1    
                 loopDirChange = 0
 
