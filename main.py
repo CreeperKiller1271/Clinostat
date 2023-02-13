@@ -29,7 +29,7 @@ def rTime(sTime):
     tLbl.after(1000,rTime, sTime)
 
 def gUpdate():
-    gString = "x: ", '{0:.2f}'.format(abs(sys.xAvg)), " y: ", '{0:.2f}'.format(abs(sys.yAvg)), " z: ", '{0:.2f}'.format(abs(sys.zAvg))
+    gString = '{0:.2f}'.format(sys.gAvg)
     gLbl.config(text=gString)
     gLbl.after(1000,gUpdate)
 

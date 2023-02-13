@@ -5,6 +5,7 @@ from simple_pid import PID
 from adafruit_motorkit import MotorKit
 from FaBo9Axis_MPU9250 import MPU9250
 import threading
+from math import sqrt
 
 #declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
 hat1 = MotorKit(steppers_microsteps=128)
@@ -37,6 +38,7 @@ class gravitySystem:
         self.xAvg = 0
         self.yAvg = 0
         self.zAvg = 0 
+        self.gAvg = 0
 
     def run(self):
         self.rThread = None
@@ -117,20 +119,22 @@ class gravitySystem:
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
                 accel = self.accelRom.readAccel()
-                xTot += accel['x']
-                yTot += accel['y']
-                zTot += accel['z']
+                xTot += abs(accel['x'])
+                yTot += abs(accel['y'])
+                zTot += abs(accel['z'])
                 
                 self.xAvg = xTot/loop
                 self.yAvg = yTot/loop
                 self.zAvg = zTot/loop
+                self.gAvg = sqrt((self.xAvg**2)+(self.yAvg**2)+(self.zAvg**2))
+
                 loop += 1
             except:
                 #print("Unable to get data from accelerometer.")
                 pass
             
 
-            print("x: ", '{0:.2f}'.format(abs(self.xAvg)), " y: ", '{0:.2f}'.format(abs(self.yAvg)), " z: ", '{0:.2f}'.format(abs(self.zAvg)))
+            print("Gravity: ", '{0:.2f}'.format(self.gAvg))
 
             if(self.target != 0):
                 m2Speed = pid(abs(self.zAvg))
