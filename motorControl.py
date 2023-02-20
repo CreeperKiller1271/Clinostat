@@ -108,11 +108,11 @@ class gravitySystem:
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop]
             try:
-                hat1.motor1.throttle = 1*m1dir#m1Speed*m1dir
+                hat1.motor1.throttle = .75*m1dir#m1Speed*m1dir
             except:
                 pass
             try:
-                hat1.motor2.throttle = 0.75*m2dir#m2Speed*m2dir
+                hat1.motor2.throttle = 1*m2dir#m2Speed*m2dir
             except:
                 pass
 
@@ -134,7 +134,7 @@ class gravitySystem:
                 pass
             
 
-            print("Gravity: ", '{0:.2f}'.format(self.gAvg))
+            print("Gravity: ", self.gAvg)
 
             if(self.target != 0):
                 m2Speed = pid(abs(self.gAvg))
