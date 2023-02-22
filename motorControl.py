@@ -13,18 +13,6 @@ hat1 = MotorKit(steppers_microsteps=128)
 #hat3 = MotorKit(address=0x62)
 #hat4 = MotorKit(address=0x63)
 
-#holds the values of the stepper so only the number needs passed to the function
-stepDict = {
-    #1: hat2.stepper1,
-    #2: hat2.stepper2,
-    #3: hat3.stepper1,
-    #4: hat3.stepper2,
-    #5: hat4.stepper1,
-    #6: hat4.stepper2,
-    #7: hat1.stepper1,   #Testing Only
-    8: hat1.stepper2    #Testing Only
-    }
-
 #Contains all the information for the gravity system
 class gravitySystem:
 
@@ -108,7 +96,7 @@ class gravitySystem:
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop]
             try:
-                hat1.motor1.throttle = .75*m1dir#m1Speed*m1dir
+                hat1.motor1.throttle = .4*m1dir#m1Speed*m1dir
             except:
                 pass
             try:
@@ -152,79 +140,3 @@ class gravitySystem:
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
         return
-
-
-#class to hold the sequence for the mechanical loading
-class stepperSequence:
-    def __init__(self, rep) -> None:
-        self.repeats = rep  #the number of times to repeat a given sequence
-        self.steps = []     #an array to hold the sequence
-        return
-
-    #called from the UI to add a step to the sequence
-    def addStep(self, step, motor, app, hold, rel, sps, stepNum = 99):
-        if (stepNum == 99):
-            self.steps.append((step, motor, app, hold, rel, sps))
-        else:
-            self.steps.insert(stepNum, (step, motor, app, hold, rel, sps))
-        return
-    
-    #called from the UI to remove a step to the sequence
-    def removeStep(self, stepNum=99):
-        if (stepNum == 99):
-            self.steps.pop(len(self.steps))
-        else:
-            self.steps.pop(stepNum)
-        return
-
-    #called from the UI to change the number of repeats for a sequence
-    def changeRepeats(self, rep):
-        self.repeats = rep
-        return
-    
-    #runs the steps in the sequence
-    def runSequence(self):
-        for _ in range(self.repeats):
-            for step in self.steps:
-                if(step[0] == 0):
-                    stepperApply(step[1], step[2], step[5])
-                elif(step[0] == 1):
-                    stepperRemove(step[1], step[2], step[5])
-                elif(step[0] == 2):
-                    stepperApplyHoldRelease(step[1], step[2], step[3], step[4], step[5])
-        return
-
-#jogs the stepper motor to a specific step value
-def jogStepper(motor, steps):
-    stepDict[motor].release()
-    time.sleep(1) #waits for the chamber to return to zero, might need to be adjusted 
-
-    #after the chanber resets to zero moves the requested number of steps
-    for _ in range(steps):
-        stepDict[motor].onestep(direction=stepper.FORWARD, )
-        time.sleep(0.01)
-    return
-
-#a simple fucntion to apply a specific number of steps to a chamber at the rate of sps
-def stepperApply(motor, steps, sps):
-    for _ in range(steps):
-        stepDict[motor].onestep(direction=stepper.FORWARD)
-        time.sleep(1/sps)
-    return
-
-#a simple fucntion to remove a specific number of steps to a chamber at the rate of sps
-def stepperRemove(motor, steps, sps):
-    for _ in range(steps):
-        stepDict[motor].onestep(direction=stepper.BACKWARD)
-        time.sleep(1/sps)
-    return
-
-def stepperApplyHoldRelease(motor, app, hold, rel, sps):
-    for _ in range(app):
-        stepDict[motor].onestep(direction=stepper.FORWARD)
-        time.sleep(1/sps)
-    time.sleep(hold)
-    for _ in range(rel):
-        stepDict[motor].onestep(direction=stepper.BACKWARD)
-        time.sleep(1/sps)
-    return
