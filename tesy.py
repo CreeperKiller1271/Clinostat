@@ -7,8 +7,8 @@ hat1 = MotorKit()
 #mpu9250 = MPU9250(address=0x68)
 
 hat1.motor1.throttle = 1
-hat1.motor2.throttle = 1
-time.sleep(100)
+hat1.motor2.throttle = 0
+time.sleep(2)
 hat1.motor1.throttle = 0
 hat1.motor2.throttle = 0
 

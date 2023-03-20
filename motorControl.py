@@ -95,14 +95,16 @@ class gravitySystem:
         #main loop of the gravity system checks the 
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop]
-            try:
-                hat1.motor1.throttle = .4*m1dir#m1Speed*m1dir
-            except:
-                pass
-            try:
-                hat1.motor2.throttle = 1*m2dir#m2Speed*m2dir
-            except:
-                pass
+            #try:
+            hat1.motor1.throttle = .7*m1dir#m1Speed*m1dir
+            #except:
+                #print("Help Me")
+                #pass
+            #try:
+            hat1.motor2.throttle = .9*m2dir#m2Speed*m2dir
+            #except:
+                #print("Help me")
+                #pass
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
