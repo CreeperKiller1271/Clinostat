@@ -94,6 +94,7 @@ class gravitySystem:
         self.zAvg = 0
         motorError = 0
         accelError = 0
+        totLoop = 0
 
         #main loop of the gravity system checks the 
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
@@ -150,9 +151,11 @@ class gravitySystem:
                 loopDirChange = 0
 
             loopDirChange += 1
+            totLoop += 1
             time.sleep(.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
+        print("Total # of loops" , totLoop)
         print("Motor Errors " , motorError)
         print("Acceleromoter Erros ", accelError)
         print("Gravity ", self.gAvg)
