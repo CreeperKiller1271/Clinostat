@@ -1,4 +1,4 @@
-5v -> purple/red -> pin2 -> green -> white -> light blue
-GND -> blue -> pin4 -> yellow -> brown -> yellow
-SDA -> white -> pin9 -> cyan -> blue -> red 
-SCL -> Green -> pin8 -> white -> light brown -> black
+5v -> purple/red -> pin2 -> green -> white -> Red
+GND -> blue -> pin4 -> yellow -> brown -> Black
+SDA -> white -> pin9 -> cyan -> blue -> Green 
+SCL -> Green -> pin8 -> white -> light brown -> White

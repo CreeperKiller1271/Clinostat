@@ -6,6 +6,7 @@ from adafruit_motorkit import MotorKit
 from FaBo9Axis_MPU9250 import MPU9250
 import threading
 from math import sqrt
+import traceback
 
 #declares the motor kits at thier given adresses, This order should match the phyical order with hat 4 being closest to the pi and hat 1 being the top of the stack
 hat1 = MotorKit(steppers_microsteps=128)
@@ -79,8 +80,8 @@ class gravitySystem:
         pid = PID(-1,-1,-1, setpoint=self.target, sample_time=.1)
         pid.output_limits = (self.minSpeed, self.maxSpeed)
 
-        m1Speed = (self.maxSpeed+self.minSpeed)/2
-        m2Speed = (self.maxSpeed+self.minSpeed)/2
+        m1Speed = 1#(self.maxSpeed+self.minSpeed)/2
+        m2Speed = .5#(self.maxSpeed+self.minSpeed)/2
         m1dir = 1   #allows for motor 1 to flip its direction
         m2dir = 1   #allows for motor 2 to flip its direction
         loop = 1    #keeps track of the current loop, needs to start at 1 for averaging
@@ -91,20 +92,28 @@ class gravitySystem:
         self.xAvg = 0
         self.yAvg = 0
         self.zAvg = 0
+        motorError = 0
+        accelError = 0
 
         #main loop of the gravity system checks the 
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
             #sets the speeds of the motors for this loop]
-            #try:
-            hat1.motor1.throttle = .7*m1dir#m1Speed*m1dir
-            #except:
-                #print("Help Me")
-                #pass
-            #try:
-            hat1.motor2.throttle = .9*m2dir#m2Speed*m2dir
-            #except:
-                #print("Help me")
-                #pass
+            if(hat1.motor1.throttle != m1Speed*m1dir):
+                try:
+                    hat1.motor1.throttle = m1Speed*m1dir
+                except:
+                    print("M1 Call")
+                    traceback.print_exc()
+                    motorError += 1
+                    pass
+            if(hat1.motor2.throttle != m2Speed*m2dir):
+                try:
+                    hat1.motor2.throttle = m2Speed*m2dir
+                except:
+                    print("M2 Call")
+                    traceback.print_exc()
+                    motorError += 1
+                    pass
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
@@ -120,11 +129,14 @@ class gravitySystem:
 
                 loop += 1
             except:
-                #print("Unable to get data from accelerometer.")
+                
+                print("Unable to get data from accelerometer.")
+                traceback.print_exc()
+                accelError += 1
                 pass
             
 
-            print("Gravity: ", self.gAvg)
+            #print("Gravity: ", self.gAvg)
 
             if(self.target != 0):
                 m2Speed = pid(abs(self.gAvg))
@@ -141,4 +153,8 @@ class gravitySystem:
             time.sleep(.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
+        print("Motor Errors " , motorError)
+        print("Acceleromoter Erros ", accelError)
+        print("Gravity ", self.gAvg)
+
         return

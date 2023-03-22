@@ -1,0 +1,115 @@
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+M1 Call
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 100, in gravityRun
+    hat1.motor1.throttle = .7*m1dir#m1Speed*m1dir
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_motor/motor.py", line 102, in throttle
+    self._positive.duty_cycle = duty_cycle
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_pca9685.py", line 92, in duty_cycle
+    self._pca.pwm_regs[self._index] = (0, value)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_register/i2c_struct_array.py", line 70, in __setitem__
+    i2c.write(buf)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_bus_device/i2c_device.py", line 101, in write
+    self.i2c.writeto(self.device_address, buf, start=start, end=end)
+  File "/usr/local/lib/python3.9/dist-packages/busio.py", line 174, in writeto
+    return self._i2c.writeto(address, memoryview(buffer)[start:end], stop=stop)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_blinka/microcontroller/generic_linux/i2c.py", line 52, in writeto
+    self._i2c_bus.write_bytes(address, buffer[start:end])
+  File "/usr/local/lib/python3.9/dist-packages/Adafruit_PureIO/smbus.py", line 314, in write_bytes
+    self._device.write(buf)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+Unable to get data from accelerometer.
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 114, in gravityRun
+    accel = self.accelRom.readAccel()
+  File "/usr/local/lib/python3.9/dist-packages/FaBo9Axis_MPU9250/MPU9250.py", line 209, in readAccel
+    data = bus.read_i2c_block_data(self.address, ACCEL_OUT, 6)
+OSError: [Errno 121] Remote I/O error
+M1 Call
+Traceback (most recent call last):
+  File "/home/pi/Desktop/Clinostat/motorControl.py", line 100, in gravityRun
+    hat1.motor1.throttle = .7*m1dir#m1Speed*m1dir
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_motor/motor.py", line 102, in throttle
+    self._positive.duty_cycle = duty_cycle
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_pca9685.py", line 92, in duty_cycle
+    self._pca.pwm_regs[self._index] = (0, value)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_register/i2c_struct_array.py", line 70, in __setitem__
+    i2c.write(buf)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_bus_device/i2c_device.py", line 101, in write
+    self.i2c.writeto(self.device_address, buf, start=start, end=end)
+  File "/usr/local/lib/python3.9/dist-packages/busio.py", line 174, in writeto
+    return self._i2c.writeto(address, memoryview(buffer)[start:end], stop=stop)
+  File "/usr/local/lib/python3.9/dist-packages/adafruit_blinka/microcontroller/generic_linux/i2c.py", line 52, in writeto
+    self._i2c_bus.write_bytes(address, buffer[start:end])
+  File "/usr/local/lib/python3.9/dist-packages/Adafruit_PureIO/smbus.py", line 314, in write_bytes
+    self._device.write(buf)
+OSError: [Errno 5] Input/output error
