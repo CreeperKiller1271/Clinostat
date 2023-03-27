@@ -26,7 +26,7 @@ class gravitySystem:
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
         self.yAvg = 0
-        self.zAvg = 0 
+        self.zAvg = 0
         self.gAvg = 0
 
     def run(self):
@@ -81,7 +81,7 @@ class gravitySystem:
         pid.output_limits = (self.minSpeed, self.maxSpeed)
 
         m1Speed = 1#(self.maxSpeed+self.minSpeed)/2
-        m2Speed = .5#(self.maxSpeed+self.minSpeed)/2
+        m2Speed = .9#(self.maxSpeed+self.minSpeed)/2
         m1dir = 1   #allows for motor 1 to flip its direction
         m2dir = 1   #allows for motor 2 to flip its direction
         loop = 1    #keeps track of the current loop, needs to start at 1 for averaging
@@ -132,7 +132,7 @@ class gravitySystem:
             except:
                 
                 print("Unable to get data from accelerometer.")
-                traceback.print_exc()
+               # traceback.print_exc()
                 accelError += 1
                 pass
             
@@ -152,7 +152,7 @@ class gravitySystem:
 
             loopDirChange += 1
             totLoop += 1
-            time.sleep(.1)  #loops every tenth of a second
+            time.sleep(0.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
         print("Total # of loops" , totLoop)

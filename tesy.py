@@ -6,8 +6,12 @@ from adafruit_motorkit import MotorKit
 #hat1 = MotorKit()
 mpu9250 = MPU9250(address=0x68)
 
+#start = time.time()
 #hat1.motor1.throttle = 1
+#print(time.time()-start)
+#start = time.time()
 #hat1.motor2.throttle = 0
+#print(time.time()-start)
 #time.sleep(2)
 #hat1.motor1.throttle = 0
 #hat1.motor2.throttle = 0

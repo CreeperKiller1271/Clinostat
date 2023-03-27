@@ -14,24 +14,32 @@ class accell:
 
     #resolution is 0.01sec
     def step(self, m1adj, m2adj):
-        #moves on m1 assuming full speed is 20rpm
+        #moves on m1 assuming full speed is 10rpm
         if(self.m1dir == False):
-            self.x += (40/6000)*m1adj
-            if(self.x >= 1):
-                self.x = -1
-        if(self.m1dir == True):
-            self.x -= (40/6000)*m1adj
-            if(self.x <= -1):
-                self.x = 1                     
-        #moves on m2 assuming full speed is 20rpm
-        if(self.m2dir == False):
-            self.y += (40/6000)*m2adj
+            self.y += (10/6000)*m1adj
             if(self.y >= 1):
-                self.y = -1
-        if(self.m2dir == True):
-            self.y -= (40/6000)*m2adj
+                tmp = self.y - 1
+                self.y = 1 - tmp 
+                self.m1dir = True
+        if(self.m1dir == True):
+            self.y -= (10/6000)*m1adj
             if(self.y <= -1):
-                self.y = 1             
+                tmp = self.y + 1
+                self.y = -1 + tmp
+                self.m1dir = False                    
+        #moves on m2 assuming full speed is 30rpm
+        if(self.m2dir == False):
+            self.x += (30/6000)*m2adj
+            if(self.x >= 1):
+                tmp = self.x - 1
+                self.x = 1 - tmp 
+                self.m2dir = True
+        if(self.m2dir == True):
+            self.x -= (30/6000)*m2adj
+            if(self.x <= -1):
+                tmp = self.x + 1
+                self.x = -1 + tmp
+                self.m2dir = False            
         #deels with the complicated z axis        
         
 
@@ -44,5 +52,7 @@ startTime = time.time() # finds the start time
 dev = accell()
 while(True):
     dev.step(1, 1)
+    
     print("x: ", '{0:.2f}'.format(dev.x), " y: ", '{0:.2f}'.format(dev.y), " z: ", '{0:.2f}'.format(dev.z))
+    #print("x: ", '{0:.2f}'.format(dev.x), " y: ", dev.y, " z: ", '{0:.2f}'.format(dev.z))
     time.sleep(0.1)
