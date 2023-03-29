@@ -1,4 +1,5 @@
 import time
+import datetime
 from adafruit_motor import stepper
 import random
 from simple_pid import PID
@@ -21,7 +22,6 @@ class gravitySystem:
         self.shutdown = False
         self.target = 0
         self.runTime = 30.0
-        self.accelRom = MPU9250(address=0x68)
         self.minSpeed = .8 #motor speed to be used when homing the device
         self.maxSpeed = 1 #general motor speed before the algo adjusts it
         self.xAvg = 0
@@ -79,6 +79,7 @@ class gravitySystem:
         self.shutdown = False
         pid = PID(-1,-1,-1, setpoint=self.target, sample_time=.1)
         pid.output_limits = (self.minSpeed, self.maxSpeed)
+        accelRom = MPU9250(address=0x68)
 
         m1Speed = 1#(self.maxSpeed+self.minSpeed)/2
         m2Speed = .9#(self.maxSpeed+self.minSpeed)/2
@@ -95,6 +96,8 @@ class gravitySystem:
         motorError = 0
         accelError = 0
         totLoop = 0
+        logFile = open('logs/{date:%Y-%m-%d_%H:%M:%S}.csv'.format( date=datetime.datetime.now() ), 'w')
+        logFile.write("Loop#, Current X, Current Y, Current Z, Average X, Average Y, Average Z, Gravity\n")
 
         #main loop of the gravity system checks the 
         while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
@@ -118,7 +121,7 @@ class gravitySystem:
 
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
-                accel = self.accelRom.readAccel()
+                accel = accelRom.readAccel()
                 xTot += accel['x']
                 yTot += accel['y']
                 zTot += accel['z']
@@ -127,11 +130,14 @@ class gravitySystem:
                 self.yAvg = yTot/loop
                 self.zAvg = zTot/loop
                 self.gAvg = sqrt((self.xAvg**2)+(self.yAvg**2)+(self.zAvg**2))
+                #s = '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}}\n'.format(loop, , accel['y'], accel['z'], self.xAvg, self.yAvg, self.zAvg, self.gAvg)
+                logFile.write(f"{loop}, {accel['x']}, {accel['y']}, {accel['z']}, {self.xAvg}, {self.yAvg}, {self.zAvg}, {self.gAvg}\n")
 
                 loop += 1
+
             except:
                 
-                print("Unable to get data from accelerometer.")
+                logFile.write("Unable to get data from accelerometer.\n")
                # traceback.print_exc()
                 accelError += 1
                 pass
@@ -155,9 +161,9 @@ class gravitySystem:
             time.sleep(0.1)  #loops every tenth of a second
         hat1.motor1.throttle = 0
         hat1.motor2.throttle = 0
-        print("Total # of loops" , totLoop)
-        print("Motor Errors " , motorError)
-        print("Acceleromoter Erros ", accelError)
-        print("Gravity ", self.gAvg)
-
+        logFile.write(f"Total Loops: {totLoop}\n")
+        logFile.write(f"Motor Errors: {motorError}\n")
+        logFile.write(f"Accelerometer Errors: {accelError}\n")
+        logFile.write(f"Final Gravity: {self.gAvg}\n")
+        logFile.close()
         return
