@@ -24,14 +24,17 @@ def eStop():
 def rTime(sTime):
     tString = '{:.2f}'.format(time.time() - sTime)
     tLbl.config(text=tString)
-    if(not sys.rThread.is_alive()):
+    if(sys.rThread.is_alive()):
+        tLbl.after(1000,rTime, sTime)
+    else:
+        
         eStop()
-    tLbl.after(1000,rTime, sTime)
 
 def gUpdate():
     gString = sys.gAvg
     gLbl.config(text=gString)
-    gLbl.after(1000,gUpdate)
+    if(sys.rThread.is_alive()):
+        gLbl.after(1000,gUpdate)
 
 sys = motorControl.gravitySystem()
 
@@ -94,7 +97,7 @@ homeRight.grid(row = 2, column=3)
 
 #mechanical loading configuration frame
 mLoadFrame = LabelFrame(setupFrame, text="Mechanical Loading")
-mLoadFrame.grid(row=0, rowspan=6, column=3)
+#mLoadFrame.grid(row=0, rowspan=6, column=3)
 
 chamber1Lebel = Label(mLoadFrame, text="Chamber 1")
 chamber1Lebel.grid(row=0,column=0)
