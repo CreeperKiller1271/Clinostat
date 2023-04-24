@@ -3,5 +3,5 @@ sudo apt install python3
 sudo apt install python3-pip
 sudo apt-get install -y i2c-tools
 sudo pip3 install adafruit-circuitpython-motorkit
-sudo pip3 install simple-pid
 sudo pip3 install sparkfun-qwiic-icm20948
+pip3 install FaBo9Axis_MPU9250

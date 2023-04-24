@@ -101,7 +101,7 @@ class gravitySystem:
         totLoop = 0
         logFile = open('logs/{date:%Y-%m-%d_%H:%M:%S}.csv'.format( date=datetime.datetime.now() ), 'w')
         logFile.write("Loop#, Current X, Current Y, Current Z, Average X, Average Y, Average Z, Gravity\n")
-        accel = dict('str', 'any')
+        accel = dict()
 
         #takes the input gravity and sets the boundry conditions propperly
         xMin = 0 - self.approachPercent

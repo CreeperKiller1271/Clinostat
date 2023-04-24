@@ -1,0 +1,9 @@
+M1+ Blue -> pin1 -> Blue
+M1- White -> pin2 -> White
+M2+ Yellow -> pin5 -> Yellow
+M2- Green -> pin4 -> Green 
+
+5V Red -> pin9 -> Red
+GND Black -> pin8 -> Black
+SCL White -> pin7 -> white
+SDA Green -> Blue -> Green -> pin6 -> Green
