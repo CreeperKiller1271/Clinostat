@@ -1,6 +1,7 @@
 from tkinter import *
 import time
 import motorControl
+import math
 
 #starts the main expariment 
 def startSequence():
@@ -27,11 +28,10 @@ def rTime(sTime):
     if(sys.rThread.is_alive()):
         tLbl.after(1000,rTime, sTime)
     else:
-        
         eStop()
 
 def gUpdate():
-    gString = sys.gAvg
+    gString = round(sys.gAvg,4)
     gLbl.config(text=gString)
     if(sys.rThread.is_alive()):
         gLbl.after(1000,gUpdate)

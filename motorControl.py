@@ -110,9 +110,12 @@ class gravitySystem:
         yMax = 0 + self.approachPercent
         zMin = self.target - self.target*self.approachPercent
         zMax = self.target + self.target*self.approachPercent
-
-        #main loop of the gravity system checks the 
-        while (float(time.time() - startTime) < self.runTime )and self.shutdown == False:
+        
+        #shifts the runtime value to seconds from hours.
+        rtime = self.runTime*60*60
+        
+        #main loop of the gravity system checks the
+        while (float(time.time() - startTime) < rtime )and self.shutdown == False:
             #gets the accelerometer values adds them to the total then calculates the rolling average.
             try:
                 accel = accelRom.readAccel()
@@ -137,7 +140,7 @@ class gravitySystem:
                 pass
             
             
-            #checks if the speed should be slowed down
+            #checks if the speed should be slowed down this is code that needs to be adjusted to make the system work better.
             if(self.target!= -1 and (xMin < accel['x'] < xMax) and (yMin < accel['y'] < yMax) and (zMin < accel['z'] < zMax)):
                 mAdj = 1*(self.gAvg-self.target)
             else:
