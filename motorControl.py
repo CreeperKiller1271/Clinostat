@@ -1,3 +1,5 @@
+#code by Spencer Lowery 2023
+
 import time
 import datetime
 import random
