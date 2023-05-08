@@ -1,3 +1,5 @@
+#code by Spencer Lowery 2023
+
 from tkinter import *
 import time
 import motorControl
